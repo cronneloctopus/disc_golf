@@ -46,7 +46,7 @@ class Course(db.DynamicDocument):
         return url_for('post', kwargs={"slug": self.slug})
 
     def __unicode__(self):
-        return self.title
+        return self.name
 
 
 class ScoreCard(db.DynamicDocument):
