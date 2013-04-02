@@ -1,7 +1,7 @@
 from flask import request, redirect, render_template, url_for, \
     session, g, flash, Blueprint
 from config import app
-#from disc_golf.models import Course
+from disc_golf.models import Course
 
 
 index_page = Blueprint(
@@ -14,7 +14,7 @@ index_page = Blueprint(
 #@login_required
 def index():
     #return "Hey!"
-    courses = [{'name': 'foo'}, {'name': 'baz'}]
+    courses = Course.objects.all()
     return render_template(
         'index.html',
         title='Disc Golf - Home',
