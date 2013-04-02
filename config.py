@@ -33,6 +33,5 @@ OPENID_PROVIDERS = [
 ###########################
 ### register blueprints ###
 ###########################
-
 from disc_golf.views import index_page
 app.register_blueprint(index_page)

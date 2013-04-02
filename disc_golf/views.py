@@ -13,7 +13,6 @@ index_page = Blueprint(
 @index_page.route('/')
 #@login_required
 def index():
-    #return "Hey!"
     courses = Course.objects.all()
     return render_template(
         'index.html',
