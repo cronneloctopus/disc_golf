@@ -37,7 +37,7 @@ class Course(db.DynamicDocument):
     Model for disc golf course detail.
     """
     name = db.StringField(max_length=255, required=True)
-    location = db.GeoPointField()
+    #location = db.GeoPointField()
     description = db.StringField(max_length=255, required=False)
     slug = db.StringField(max_length=255, required=True)
     #thumbnail = db.ImageField()
