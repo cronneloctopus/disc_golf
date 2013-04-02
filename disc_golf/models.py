@@ -43,7 +43,7 @@ class Course(db.DynamicDocument):
     #thumbnail = db.ImageField()
 
     def get_absolute_url(self):
-        return url_for('post', kwargs={"slug": self.slug})
+        return url_for('course', kwargs={"slug": self.slug})
 
     def __unicode__(self):
         return self.name
