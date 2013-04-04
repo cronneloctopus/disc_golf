@@ -1,5 +1,8 @@
-<ul>
-{% for course in courses %}
-  <li>{{ course.name }}</li>
-{% endfor %}
-</ul>
+{% extends 'base.html' %}
+{% block content %}
+  <ul>
+  {% for course in courses %}
+    <li>{{ course.name }}</li>
+  {% endfor %}
+  </ul>
+{% endblock content %}
