@@ -19,3 +19,13 @@ def index():
         title='Disc Golf - Home',
         courses=courses
     )
+
+
+@app.route('/course/<slug>')
+def course_detail(slug):
+    course = Course.objects.get(slug=slug)
+    return render_template(
+        'course_detail.html',
+        title='Course Detail -' + course.name,
+        course=course,
+    )
