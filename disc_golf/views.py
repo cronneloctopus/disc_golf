@@ -21,7 +21,7 @@ def index():
     )
 
 
-@app.route('/course/<slug>')
+@app.route('/course/<slug>/')
 def course_detail(slug):
     course = Course.objects.get(slug=slug)
     return render_template(

@@ -37,13 +37,15 @@ class Course(db.DynamicDocument):
     Model for disc golf course detail.
     """
     name = db.StringField(max_length=255, required=True)
-    #location = db.GeoPointField()
+    location = db.GeoPointField()
     description = db.StringField(max_length=255, required=False)
     slug = db.StringField(max_length=255, required=True)
     #thumbnail = db.ImageField()
 
     def get_absolute_url(self):
-        return url_for('course', kwargs={"slug": self.slug})
+        #return url_for('course', kwargs={"slug": self.slug})
+        return url_for('course_detail', slug=self.slug)
+        #return "/course/%s" % self.slug
 
     def __unicode__(self):
         return self.name
