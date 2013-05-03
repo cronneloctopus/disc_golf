@@ -7,7 +7,6 @@
     margin-bottom: 30px;
 }
 #score_form, #course_data {
-    background: #F6F7A3;
 }
 #course_data {
     background: white;
@@ -23,8 +22,6 @@
 }
 .clearing {
     clear:both;
-}.column {
-    background: green;
 }
 
 /* links */
