@@ -2,20 +2,17 @@
 #top-menu {
     height: 30px;
     background: #1d1d1d;
-    color: white;
+    color: #efefef;
     padding-top: 7px;
     margin-bottom: 30px;
 }
 #score_form, #course_data {
     background: #F6F7A3;
-    margin: 20px 0px 0px 0px;
-    padding: 10px;
 }
 #course_data {
     background: white;
-    border: 1px solid #efefef;
+    border: 0px solid #efefef;
     border-bottom: 2px solid #efefef;
-    margin-left: 58px;
 }
 
 /* classes */
@@ -26,8 +23,9 @@
 }
 .clearing {
     clear:both;
+}.column {
+    background: green;
 }
-
 
 /* links */
 #top-menu a {
@@ -41,10 +39,10 @@
 
 /* map */
 #map_canvas {
-    width: 100%;
     height: 100%;
+    margin: 10px;
 }
 #map {
-    width: 100%;
+    display: block;
     height: 250px;
 }

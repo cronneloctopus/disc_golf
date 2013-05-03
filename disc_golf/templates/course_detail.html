@@ -36,44 +36,49 @@
 
 {% block content %}
 
-{% for field in form.errors %}
-{% for error in form.errors[field] %}
-    <div class="alert alert-error">
-        <strong>Error!</strong> {{error}}
-    </div>
-{% endfor %}
-{% endfor %}
+<div class="sixteen columns">
 
+  {% for field in form.errors %}
+  {% for error in form.errors[field] %}
+      <div class="alert alert-error">
+          <strong>Error!</strong> {{error}}
+      </div>
+  {% endfor %}
+  {% endfor %}
 
   <h1>{{ course.name }}</h1>
   <p>{{ course.description }}</p>
-  <div id="map-canvas"></div>
-  <div id="map" class="twelve columns"></div>
+</div><!-- end wrapper -->
 
-  <div class="clearing"</div>
+<div class="sixteen columns">
+  <div id="map-canvas" class="sixteen columns"></div>
+  <div id="map" class="sixteen columns"></div>
+</div>
 
-  <div class="container">
-      <div id="score_form" class="five columns">
-        {% from "_formhelpers.html" import render_field %}
-          <form method="POST" action=".">
-            {{ form.csrf_token }}
-            <dl>
-              {{ render_field(form.score) }}
-              {{ render_field(form.baskets) }}
-            </dl>
-            <p><input type="submit" value="Submit Score">
-          </form>
-      </div>
+<div class="clearing" style="margin-bottom:30px"></div>
 
-      <div id="course_data" class="eight columns">
-        <h3>{{ course.name }} data</h3>
-        {% if data.nine_basket_avg %}
-          <p>Nine baskets average score: <strong>{{ data.nine_basket_avg }}</strong></p>
-        {% endif %}
-        {% if data.eighteen_basket_avg %}
-          <p>Eighteen baskets average score: <strong>{{ data.eighteen_basket_avg }}</strong></p>
-        {% endif %}
-      </div>
-  </div>
+
+    <div id="score_form" class="one-third column">
+      <h3>Record your score</h3>
+      {% from "_formhelpers.html" import render_field %}
+        <form method="POST" action=".">
+          {{ form.csrf_token }}
+          <dl>
+            {{ render_field(form.score) }}
+            {{ render_field(form.baskets) }}
+          </dl>
+          <p><input type="submit" value="Submit Score">
+        </form>
+    </div>
+
+    <div id="course_data" class="two-thirds column">
+      <h3>Your {{ course.name }} data</h3>
+      {% if data.nine_basket_avg %}
+        <p>Nine baskets average: <strong>{{ data.nine_basket_avg }}</strong></p>
+      {% endif %}
+      {% if data.eighteen_basket_avg %}
+        <p>Eighteen baskets average: <strong>{{ data.eighteen_basket_avg }}</strong></p>
+      {% endif %}
+    </div>
   
 {% endblock content %}

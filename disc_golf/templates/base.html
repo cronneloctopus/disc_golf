@@ -15,7 +15,7 @@
     {# if there is a course location, init function #}
     <body {% if course and course.location %}onload="init(){% endif %}">
       <div class="container">  
-      <div id="top-menu" class="container">
+      <div id="top-menu" class="sixteen columns">
         <a href="{{ url_for('index_page.index') }}">Home</a>
 
           {% if g.user %}
@@ -24,8 +24,10 @@
             | <a href="{{ url_for ("login") }}">sign in</a>
           {% endif %}
       </div><!-- end top-menu -->
-        {% block content %}
-        {% endblock content %}
+        
+          {% block content %}
+          {% endblock content %}
+
       </div><!-- end container -->
     </body>
 </html>

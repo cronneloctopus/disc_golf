@@ -141,7 +141,9 @@ def course_detail(slug):
     data = {'nine_sum': 0, 'eighteen_sum': 0}
     nine_count = 0
     eighteen_count = 0
-    all_scores = ScoreCard.objects.all()
+    all_scores = ScoreCard.objects.all().filter(user=g.user)
+
+    print all_scores
 
     if all_scores:
         for card in all_scores:
