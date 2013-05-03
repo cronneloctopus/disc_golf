@@ -65,8 +65,14 @@
           </form>
       </div>
 
-      <div id="course_data" class="ten columns">
+      <div id="course_data" class="eight columns">
         <h3>{{ course.name }} data</h3>
+        {% if data.nine_basket_avg %}
+          <p>Nine baskets average score: <strong>{{ data.nine_basket_avg }}</strong></p>
+        {% endif %}
+        {% if data.eighteen_basket_avg %}
+          <p>Eighteen baskets average score: <strong>{{ data.eighteen_basket_avg }}</strong></p>
+        {% endif %}
       </div>
   </div>
   

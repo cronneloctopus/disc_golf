@@ -58,7 +58,8 @@ class ScoreCard(db.DynamicDocument):
     user = db.ReferenceField(User)
     course = db.ReferenceField(Course)
     score = db.IntField()
+    baskets = db.IntField()
     handicap = db.IntField(default=0, required=False)
 
     def __unicode__(self):
-        return "%s | %s | %s" % (self.user, self.course, self.score)
+        return "%s | %s | %s (%s)" % (self.user, self.course, self.score, self.baskets)

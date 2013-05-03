@@ -133,12 +133,34 @@ def course_detail(slug):
         course_score = ScoreCard(
             user=g.user,
             score=form.score.data,
+            baskets=form.baskets.data,
         )
         course_score.save()
         flash('Thanks for submitting a score!')
+    # get course data
+    data = {'nine_sum': 0, 'eighteen_sum': 0}
+    nine_count = 0
+    eighteen_count = 0
+    all_scores = ScoreCard.objects.all()
+
+    if all_scores:
+        for card in all_scores:
+            if card.baskets == 9 and card.score:
+                nine_count += 1
+                data['nine_sum'] += card.score
+            elif card.baskets == 18 and card.score:
+                eighteen_count += 1
+                data['eighteen_sum'] += card.score
+
+    if nine_count > 0:
+        data['nine_basket_avg'] = data['nine_sum'] / nine_count
+    if eighteen_count > 0:
+        data['eighteen_basket_avg'] = data['eighteen_sum'] / eighteen_count
+
     return render_template(
         'course_detail.html',
         title='Course Detail -' + course.name,
         course=course,
         form=form,
+        data=data,
     )
