@@ -1,6 +1,6 @@
-from wtforms import Form, TextField, validators
+from wtforms import Form, TextField, validators, widgets
 from flask.ext.wtf import Form, TextField, BooleanField, IntegerField, \
-    SelectField, Required
+    SelectField, Required, DateField
 
 BASKETS_CHOICES = [('9', 9), ('18', 18)]
 
@@ -11,5 +11,6 @@ class LoginForm(Form):
 
 
 class ScoreForm(Form):
+    created = DateField('Date', format='%m/%d/%Y')
     score = TextField(validators=[Required()])
     baskets = SelectField(choices=BASKETS_CHOICES)

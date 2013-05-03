@@ -9,6 +9,7 @@ from forms import LoginForm, ScoreForm
 from flask.ext.openid import OpenID
 from config import OPENID_PROVIDERS
 from models import User
+import datetime
 
 
 index_page = Blueprint(
@@ -135,17 +136,21 @@ def course_detail(slug):
             score=form.score.data,
             baskets=form.baskets.data,
         )
+        if course_score.created:
+            course_score.created = form.created.data
         course_score.save()
         flash('Thanks for submitting a score!')
     # get course data
     data = {'nine_sum': 0, 'eighteen_sum': 0}
     nine_count = 0
     eighteen_count = 0
-    all_scores = ScoreCard.objects.all().filter(user=g.user)
-
-    print all_scores
+    all_scores = ScoreCard.objects.all().filter(
+        user=g.user
+    ).order_by('-created')
 
     if all_scores:
+        # get data of last round
+        data['last_round'] = all_scores[0]
         for card in all_scores:
             if card.baskets == 9 and card.score:
                 nine_count += 1
@@ -165,4 +170,5 @@ def course_detail(slug):
         course=course,
         form=form,
         data=data,
+        all_scores=all_scores
     )

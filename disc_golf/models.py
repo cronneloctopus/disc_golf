@@ -1,5 +1,6 @@
 from flask import url_for
 from application import db
+import datetime
 
 
 ROLE_USER = 0
@@ -57,6 +58,7 @@ class ScoreCard(db.DynamicDocument):
     """
     user = db.ReferenceField(User)
     course = db.ReferenceField(Course)
+    created = db.DateTimeField(default=datetime.datetime.now, required=True)
     score = db.IntField()
     baskets = db.IntField()
     handicap = db.IntField(default=0, required=False)

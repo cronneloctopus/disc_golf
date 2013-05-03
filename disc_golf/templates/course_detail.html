@@ -62,8 +62,10 @@
       <h3>Record your score</h3>
       {% from "_formhelpers.html" import render_field %}
         <form method="POST" action=".">
+
           {{ form.csrf_token }}
           <dl>
+            {{ render_field(form.created) }}
             {{ render_field(form.score) }}
             {{ render_field(form.baskets) }}
           </dl>
@@ -73,12 +75,19 @@
 
     <div id="course_data" class="two-thirds column">
       <h3>Your {{ course.name }} data</h3>
+      {% if data.last_round %}
+        <p>Last Played: <strong>{{ data.last_round.created.strftime('%A, %b %Y') }}</strong></p>
+        <p>Last Score: <strong>{{ data.last_round.score }}</strong><p>
+      {% endif %}
       {% if data.nine_basket_avg %}
         <p>Nine baskets average: <strong>{{ data.nine_basket_avg }}</strong></p>
       {% endif %}
       {% if data.eighteen_basket_avg %}
         <p>Eighteen baskets average: <strong>{{ data.eighteen_basket_avg }}</strong></p>
       {% endif %}
+
     </div>
+
+
   
 {% endblock content %}
