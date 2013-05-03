@@ -5,6 +5,7 @@ from flask import Flask
 from config import app
 #app = Flask(__name__)
 #app.debug = True
+app.secret_key = "teddymonkey"
 
 
 # get config settings
