@@ -49,3 +49,12 @@
 #created {
     position: relative; z-index: 100000;
 }
+
+
+/* tables */
+table {
+    width: 100%;
+}
+th, td {
+   border: 1px solid #efefef;
+}

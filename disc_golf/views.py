@@ -135,29 +135,38 @@ def course_detail(slug):
             user=g.user,
             score=form.score.data,
             baskets=form.baskets.data,
+            course=course
         )
         if course_score.created:
             course_score.created = form.created.data
         course_score.save()
         flash('Thanks for submitting a score!')
+
     # get course data
     data = {'nine_sum': 0, 'eighteen_sum': 0}
     nine_count = 0
     eighteen_count = 0
-    all_scores = ScoreCard.objects.all().filter(
+    all_scores = ScoreCard.objects.all().filter(course=course).filter(
         user=g.user
     ).order_by('-created')
 
     if all_scores:
         # get data of last round
         data['last_round'] = all_scores[0]
+        nine_score_list = []
+        eighteen_score_list = []
         for card in all_scores:
             if card.baskets == 9 and card.score:
                 nine_count += 1
+                nine_score_list.append(card.score)
                 data['nine_sum'] += card.score
             elif card.baskets == 18 and card.score:
                 eighteen_count += 1
+                eighteen_score_list.append(card.score)
                 data['eighteen_sum'] += card.score
+        # sort scores
+        data['nine_score_list'] = sorted(nine_score_list)
+        data['eighteen_score_list'] = sorted(eighteen_score_list)
 
     if nine_count > 0:
         data['nine_basket_avg'] = data['nine_sum'] / nine_count

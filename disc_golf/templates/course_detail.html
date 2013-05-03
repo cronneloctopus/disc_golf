@@ -16,7 +16,7 @@
         var position       = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
 
         map = new OpenLayers.Map("map");
-        var mapnik         = new OpenLayers.Layer.OSM();
+        var mapnik = new OpenLayers.Layer.OSM();
         map.addLayer(mapnik);
 
         var markers = new OpenLayers.Layer.Markers( "Markers" );
@@ -77,14 +77,30 @@
       <h3>Your {{ course.name }} data</h3>
       {% if data.last_round %}
         <p>Last Played: <strong>{{ data.last_round.created.strftime('%A, %b %Y') }}</strong></p>
-        <p>Last Score: <strong>{{ data.last_round.score }}</strong><p>
+        <p>Last Score: <strong>{{ data.last_round.score }}</strong> ({{ data.last_round.baskets }} baskets)<p>
       {% endif %}
-      {% if data.nine_basket_avg %}
-        <p>Nine baskets average: <strong>{{ data.nine_basket_avg }}</strong></p>
-      {% endif %}
-      {% if data.eighteen_basket_avg %}
-        <p>Eighteen baskets average: <strong>{{ data.eighteen_basket_avg }}</strong></p>
-      {% endif %}
+
+
+      <table>
+        <th></th>
+        <th><strong>Nine Baskets</strong></th>
+        <th><strong>Eighteen Baskets</strong></th>
+        <tr>
+          <td>Best</td>
+          <td>{% if data.nine_score_list %}{{ data.nine_score_list[0] }}{% else %}No data{% endif %}</td>
+          <td>{% if  data.eighteen_score_list %}{{ data.eighteen_score_list[0] }}{% else %}No data{% endif %}</td>
+        </tr>
+        <tr>
+          <td>Worst</td>
+          <td>{% if data.nine_score_list %}{{ data.nine_score_list[-1] }}{% else %}No data{% endif %}</td>
+          <td>{% if  data.eighteen_score_list %}{{ data.eighteen_score_list[-1] }}{% else %}No data{% endif %}</td>
+        </tr>
+        <tr>
+          <td>Avg</td>
+          <td>{% if data.nine_basket_avg %}{{ data.nine_basket_avg }}{% else %}No data{% endif %}</td>
+          <td>{% if data.eighteen_basket_avg %}{{ data.eighteen_basket_avg }}{% else %}No data{% endif %}</td>
+        </tr>
+      </table>  
 
     </div>
 
