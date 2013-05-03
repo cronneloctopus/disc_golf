@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="twelve columns">
+
   {% for course in courses %}
-    <div class="five columns course-box">
-        <h1>{{ course.name }}</h1>
+    <div class="four columns course-box">
+        <h2>{{ course.name }}</h2>
         <p>{{ course.description }}</p>
         <p><a href="{{ url_for('course_detail', slug=course.slug) }}">Read more</a></p>
     </div>
   {% endfor %}
-</div>
+
 
 {% endblock content %}
