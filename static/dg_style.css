@@ -55,6 +55,18 @@
 table {
     width: 100%;
 }
+th {
+    background: #1d1d1d;
+}
+th strong {
+    color: white;
+}
 th, td {
    border: 1px solid #efefef;
+}
+tr.odd {
+    background: #efefef;
+}
+tr td:first-child {
+    font-weight: bold;
 }

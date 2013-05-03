@@ -7,6 +7,7 @@ WTForms==1.0.3
 Werkzeug==0.8.3
 argparse==1.2.1
 flask-mongoengine==0.6
+gunicorn==0.17.4
 mongoengine==0.7.9
 pymongo==2.5
 python-openid==2.2.5
