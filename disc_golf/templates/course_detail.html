@@ -3,35 +3,17 @@
 {% block extra_head %}
 <!-- OPEN STREET MAP -->
 <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
-<script>
-    {% if course and course.location %}
-    
-      function init() {
-        var lat            = {{ course.location[0] }};
-        var lon            = {{ course.location[1] }};
-        var zoom           = 14;
+<script type="text/javascript" src="{{ url_for('static', filename='js/course_map.js') }}"></script>
 
-        var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
-        var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
-        var position       = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
-
-        map = new OpenLayers.Map("map");
-        var mapnik = new OpenLayers.Layer.OSM();
-        map.addLayer(mapnik);
-
-        var markers = new OpenLayers.Layer.Markers( "Markers" );
-        map.addLayer(markers);
-        markers.addMarker(new OpenLayers.Marker(position));
-
-        map.setCenter(position, zoom);
-      }
-
-    {% else %}
-      $(document).ready(function() {
-        $('#map').html('No Map Data');
-      });
-    {% endif %}
+<script type="text/javascript">
+var courseLat = undefined;
+var courseLon = undefined;
+{% if course.location[0] and course.location[1] %} 
+  var courseLat = {{ course.location[0] }};
+  var courseLon = {{ course.location[1] }};
+{% endif %}
 </script>
+
 {% endblock extra_head %}
 
 {% block content %}
