@@ -9,13 +9,22 @@ from forms import LoginForm, ScoreForm
 from flask.ext.openid import OpenID
 from config import OPENID_PROVIDERS
 from models import User
-import datetime
 
 
 index_page = Blueprint(
     'index_page', __name__,
     template_folder='templates'
 )
+
+
+@app.template_filter('divide')
+def divide_filter(v, arg):
+    return v / arg
+
+
+@app.template_filter('subtract')
+def subtract_filter(v, arg):
+    return v - arg
 
 
 ############################ OPENID ######################
@@ -75,21 +84,14 @@ def after_login(resp):
         # get user object based on request
         user = User.objects.get(email=resp.email)
     except User.DoesNotExist:
-        return redirect(url_for('login'))
-    """
-    if user is None:
-        username = resp.nickname
-        if username is None or username == "":
-            username = resp.email.split('@')[0]
-        user = User(username=username, email=resp.email, role=ROLE_USER)
-        session['username'] = username
+        # add user to db!!
+        user = User(
+            username=resp.email,
+            email=resp.email
+        )
+        user.save()
+        ###return redirect(url_for('login'))
 
-    remember_me = False
-    if 'remember_me' in session:
-        remember_me = session['remember_me']
-        session.pop('remember_me', None)
-    return redirect(request.args.get('next') or url_for('admin.list'))
-    """
     session['user'] = user
     session['email'] = resp.email
     if user is not None:
@@ -129,6 +131,7 @@ def course_detail(slug):
     course = Course.objects.get(slug=slug)
     # score form
     form = ScoreForm(request.form)
+    # validate and submit form data
     if request.method == 'POST' and form.validate():
         print g.user
         course_score = ScoreCard(
@@ -149,6 +152,7 @@ def course_detail(slug):
     all_scores = ScoreCard.objects.all().filter(course=course).filter(
         user=g.user
     ).order_by('-created')
+    # print all_scores
 
     if all_scores:
         # get data of last round
@@ -168,6 +172,7 @@ def course_detail(slug):
         data['nine_score_list'] = sorted(nine_score_list)
         data['eighteen_score_list'] = sorted(eighteen_score_list)
 
+    # calculate mean averages
     if nine_count > 0:
         data['nine_basket_avg'] = data['nine_sum'] / nine_count
     if eighteen_count > 0:

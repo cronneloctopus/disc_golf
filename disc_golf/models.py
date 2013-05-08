@@ -1,10 +1,24 @@
-from flask import url_for
 from application import db
 import datetime
+import re
 
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
+
+_punct_re = re.compile(
+    r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+'
+)
+
+
+def slugify(text, delim=u'-'):
+    """
+    Generates an ASCII-only slug.
+    """
+    result = []
+    for word in _punct_re.split(text.lower()):
+        result.extend(word.split())
+    return unicode(delim.join(result))
 
 
 class User(db.DynamicDocument):
@@ -40,16 +54,21 @@ class Course(db.DynamicDocument):
     name = db.StringField(max_length=255, required=True)
     location = db.GeoPointField()
     description = db.StringField(max_length=255, required=False)
-    slug = db.StringField(max_length=255, required=True)
+    slug = db.StringField(max_length=255, required=False)
+    par = db.StringField(max_length=255, required=False)
     #thumbnail = db.ImageField()
 
-    def get_absolute_url(self):
-        #return url_for('course', kwargs={"slug": self.slug})
-        return url_for('course_detail', slug=self.slug)
-        #return "/course/%s" % self.slug
+    def save(self, *args, **kwargs):
+        # custom save method to create slug
+        self.slug = slugify(text=self.name)
+        super(Course, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
+
+    def get_slug(self):
+        slug = slugify(text=self.name)
+        return slug
 
 
 class ScoreCard(db.DynamicDocument):
@@ -64,4 +83,6 @@ class ScoreCard(db.DynamicDocument):
     handicap = db.IntField(default=0, required=False)
 
     def __unicode__(self):
-        return "%s | %s | %s (%s)" % (self.user, self.course, self.score, self.baskets)
+        return "%s | %s | %s (%s)" % (
+            self.user, self.course, self.score, self.baskets
+        )

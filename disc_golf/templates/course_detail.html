@@ -9,7 +9,7 @@
       function init() {
         var lat            = {{ course.location[0] }};
         var lon            = {{ course.location[1] }};
-        var zoom           = 16;
+        var zoom           = 14;
 
         var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
         var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
@@ -56,6 +56,9 @@
 
 <div class="clearing" style="margin-bottom:30px"></div>
 
+
+{% if g.user %}
+
 <div class="sixteen columns">
   <p>{{ course.description }}</p>
   <hr />
@@ -79,7 +82,7 @@
 <div id="course_data" class="two-thirds column">
   <h3>Your {{ course.name }} data</h3>
   {% if data.last_round %}
-    <p>Last Played: <strong>{{ data.last_round.created.strftime('%A, %b %Y') }}</strong></p>
+    <p>Last Played: <strong>{{ data.last_round.created.strftime('%A %e %b, %Y') }}</strong></p>
     <p>Last Score: <strong>{{ data.last_round.score }}</strong> ({{ data.last_round.baskets }} baskets)<p>
   {% endif %}
 
@@ -90,22 +93,65 @@
     <th><strong>Eighteen Baskets</strong></th>
     <tr class="even">
       <td>Best</td>
-      <td>{% if data.nine_score_list %}{{ data.nine_score_list[0] }}{% else %}No data{% endif %}</td>
-      <td>{% if  data.eighteen_score_list %}{{ data.eighteen_score_list[0] }}{% else %}No data{% endif %}</td>
+      <td>
+        {% if data.nine_score_list %}
+            {{ data.nine_score_list[0] }} [
+                {% if data.nine_score_list[0] > 27 %}+{% endif %}{{ data.nine_score_list[0]|subtract(27) }} ]
+        {% else %}No data
+        {% endif %}
+      </td>
+      <td>
+         {% if data.eighteen_score_list %}
+            {{ data.eighteen_score_list[0] }} [
+                {% if data.eighteen_score_list[0] > 54 %}+{% endif %}{{ data.eighteen_score_list[0]|subtract(54) }} ]
+        {% else %}No data
+        {% endif %}
+      </td>
     </tr>
     <tr class="odd">
       <td>Worst</td>
-      <td>{% if data.nine_score_list %}{{ data.nine_score_list[-1] }}{% else %}No data{% endif %}</td>
-      <td>{% if  data.eighteen_score_list %}{{ data.eighteen_score_list[-1] }}{% else %}No data{% endif %}</td>
+      <td>
+        {% if data.nine_score_list %}
+            {{ data.nine_score_list[-1] }} [
+                {% if data.nine_score_list[-1] > 27 %}+{% endif %}{{ data.nine_score_list[-1]|subtract(27) }} ]
+        {% else %}No data
+        {% endif %}
+      </td>
+      <td>
+         {% if data.eighteen_score_list %}
+            {{ data.eighteen_score_list[-1] }} [
+                {% if data.eighteen_score_list[-1] > 54 %}+{% endif %}{{ data.eighteen_score_list[-1]|subtract(54) }} ]
+        {% else %}No data
+        {% endif %}
+      </td>
     </tr>
     <tr class="even">
       <td>Avg</td>
-      <td>{% if data.nine_basket_avg %}{{ data.nine_basket_avg }}{% else %}No data{% endif %}</td>
-      <td>{% if data.eighteen_basket_avg %}{{ data.eighteen_basket_avg }}{% else %}No data{% endif %}</td>
+      <td>
+        {% if data.nine_basket_avg %}
+            {{ data.nine_basket_avg }} [
+                {% if data.nine_basket_avg > 27 %}+{% endif %}{{ data.nine_basket_avg|subtract(27) }} ]
+        {% else %}No data
+        {% endif %}
+      </td>
+      <td>
+        {% if data.eighteen_basket_avg %}
+            {{ data.eighteen_basket_avg }} [
+                {% if data.eighteen_basket_avg > 54 %}+{% endif %}{{ data.eighteen_basket_avg|subtract(54) }} ]
+        {% else %}No data
+        {% endif %}
+      </td>
     </tr>
   </table>  
 
 </div>
+
+
+{% else %}
+<div>
+  <h1>Sign in to start recording you scores for {{ course.name }}!</h1> 
+</div>
+{% endif %}
 
 
   
