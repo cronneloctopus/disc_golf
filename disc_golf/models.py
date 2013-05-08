@@ -75,8 +75,8 @@ class ScoreCard(db.DynamicDocument):
     """
     Model for user scores by course.
     """
-    user = db.ReferenceField(User)
-    course = db.ReferenceField(Course)
+    user = db.ReferenceField(User, dbref=True)
+    course = db.ReferenceField(Course, dbref=True)
     created = db.DateTimeField(default=datetime.datetime.now, required=True)
     score = db.IntField()
     baskets = db.IntField()
