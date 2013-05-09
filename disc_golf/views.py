@@ -159,24 +159,47 @@ def course_detail(slug):
         data['last_round'] = all_scores[0]
         nine_score_list = []
         eighteen_score_list = []
+        nine_scores = []
+        eighteen_scores = []
         for card in all_scores:
             if card.baskets == 9 and card.score:
                 nine_count += 1
                 nine_score_list.append(card.score)
+                # make time tuple
+                tt = card.created.timetuple()
+                dt = (tt[0], tt[1], tt[2])
+                # update dictionary
+                nine_scores.append((dt, card.score))
                 data['nine_sum'] += card.score
             elif card.baskets == 18 and card.score:
                 eighteen_count += 1
                 eighteen_score_list.append(card.score)
+                # update dictionary
+                eighteen_scores[card.created] = card.score
                 data['eighteen_sum'] += card.score
-        # sort scores
-        data['nine_score_list'] = sorted(nine_score_list)
-        data['eighteen_score_list'] = sorted(eighteen_score_list)
 
-    # calculate mean averages
-    if nine_count > 0:
-        data['nine_basket_avg'] = data['nine_sum'] / nine_count
-    if eighteen_count > 0:
-        data['eighteen_basket_avg'] = data['eighteen_sum'] / eighteen_count
+        # get avgs
+        if data['nine_sum']:
+            data['nine_avg'] = data['nine_sum'] / len(nine_scores)
+        if data['eighteen_sum']:
+            data['eighteen_avg'] = data['eighteen_sum'] / len(eighteen_scores)
+
+        # get min, max
+        if len(nine_scores) > 0:
+            data['nine_max'] = map(max, zip(*nine_scores))
+            data['nine_min'] = map(min, zip(*nine_scores))
+        if len(eighteen_scores) > 0:
+            data['eighteen_max'] = map(max, zip(*eighteen_scores))
+            data['eighteen_min'] = map(min, zip(*eighteen_scores))
+
+        # get start date, end date
+
+        
+
+        # sort scores
+        ###data['nine_max'] = max(nine_score_dict, key=lambda x: nine_score_dict.get(x))
+        ###data['nine_min'] = min(nine_score_dict, key=lambda x: nine_score_dict.get(x))
+        ###print data['nine_max']
 
     return render_template(
         'course_detail.html',
@@ -184,5 +207,7 @@ def course_detail(slug):
         course=course,
         form=form,
         data=data,
-        all_scores=all_scores
+        all_scores=all_scores,
+        nine_scores=nine_scores,
+        eighteen_scores=eighteen_scores
     )

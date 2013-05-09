@@ -3,15 +3,47 @@
 {% block extra_head %}
 <!-- OPEN STREET MAP -->
 <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/course_map.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/score_chart.js') }}"></script>
 
 <script type="text/javascript">
+//** map variables  **//
 var courseLat = undefined;
 var courseLon = undefined;
 {% if course.location[0] and course.location[1] %} 
-  var courseLat = {{ course.location[0] }};
-  var courseLon = {{ course.location[1] }};
+  courseLat = {{ course.location[0] }};
+  courseLon = {{ course.location[1] }};
 {% endif %}
+
+//** chart variables **//
+var nine_score_arr = new Array();
+
+{% if nine_scores %}
+  {% for d, v in nine_scores %}
+    arr = new Array();
+    arr.push(Date.UTC({{ d[0] }}, {{ d[1]-1 }}, {{ d[2] }}));
+    arr.push({{ v }});
+    console.log(arr)
+    nine_score_arr.push(arr);
+  {% endfor %}
+{% endif %}
+
+console.log(nine_score_arr[0]);
+
+// min, max values
+// set minimum to 0 to be safe 
+var min_score = 0;
+{% if data.nine_min and data.eighteen_min %}
+  min_score = Math.min({{ data.nine_min[1] }}, {{ data.eighteen_min[1] }});
+{% elif data.nine_min and not data.eighteen_min %}
+  min_score = {{ data.nine_min[1] }};
+{% elif data.eighteen_min and not data.nine_min %}
+  min_score =  {{ data.eighteen_min[1] }};
+{% endif %} 
+
 </script>
 
 {% endblock extra_head %}
@@ -76,16 +108,16 @@ var courseLon = undefined;
     <tr class="even">
       <td>Best</td>
       <td>
-        {% if data.nine_score_list %}
-            {{ data.nine_score_list[0] }} [
-                {% if data.nine_score_list[0] > 27 %}+{% endif %}{{ data.nine_score_list[0]|subtract(27) }} ]
+        {% if data.nine_min %}
+            {{ data.nine_min[1] }} [
+                {% if data.nine_min[1] > 27 %}+{% endif %}{{ data.nine_min[1]|subtract(27) }} ]
         {% else %}No data
         {% endif %}
       </td>
       <td>
-         {% if data.eighteen_score_list %}
-            {{ data.eighteen_score_list[0] }} [
-                {% if data.eighteen_score_list[0] > 54 %}+{% endif %}{{ data.eighteen_score_list[0]|subtract(54) }} ]
+         {% if data.eighteen_min %}
+            {{ data.eighteen_min[1] }} [
+                {% if data.eighteen_min[1] > 54 %}+{% endif %}{{ data.eighteen_min[1]|subtract(54) }} ]
         {% else %}No data
         {% endif %}
       </td>
@@ -93,16 +125,16 @@ var courseLon = undefined;
     <tr class="odd">
       <td>Worst</td>
       <td>
-        {% if data.nine_score_list %}
-            {{ data.nine_score_list[-1] }} [
-                {% if data.nine_score_list[-1] > 27 %}+{% endif %}{{ data.nine_score_list[-1]|subtract(27) }} ]
+        {% if data.nine_max %}
+            {{ data.nine_max[1] }} [
+                {% if data.nine_max[1] > 27 %}+{% endif %}{{ data.nine_max[1]|subtract(27) }} ]
         {% else %}No data
         {% endif %}
       </td>
       <td>
-         {% if data.eighteen_score_list %}
-            {{ data.eighteen_score_list[-1] }} [
-                {% if data.eighteen_score_list[-1] > 54 %}+{% endif %}{{ data.eighteen_score_list[-1]|subtract(54) }} ]
+         {% if data.eighteen_max %}
+            {{ data.eighteenmax[1] }} [
+                {% if data.eighteen_max[1] > 54 %}+{% endif %}{{ data.eighteen_max[1]|subtract(54) }} ]
         {% else %}No data
         {% endif %}
       </td>
@@ -110,21 +142,29 @@ var courseLon = undefined;
     <tr class="even">
       <td>Avg</td>
       <td>
-        {% if data.nine_basket_avg %}
-            {{ data.nine_basket_avg }} [
-                {% if data.nine_basket_avg > 27 %}+{% endif %}{{ data.nine_basket_avg|subtract(27) }} ]
+        {% if data.nine_avg %}
+            {{ data.nine_avg }}
+            [
+            {% if data.nine_avg > 27 %}+{% endif %}{{ data.nine_avg|subtract(27) }} 
+             ]
         {% else %}No data
         {% endif %}
       </td>
       <td>
-        {% if data.eighteen_basket_avg %}
-            {{ data.eighteen_basket_avg }} [
-                {% if data.eighteen_basket_avg > 54 %}+{% endif %}{{ data.eighteen_basket_avg|subtract(54) }} ]
+        {% if data.eighteen_avg %}
+            {# set nine basket average #}
+            {{ data.eighteen_avg }}
+            [
+            {% if data.eighteen_avg > 27 %}+{% endif %}{{ data.eighteen_avg|subtract(27) }} 
+             ]
         {% else %}No data
         {% endif %}
       </td>
     </tr>
-  </table>  
+  </table> 
+
+  <div id="score_chart">
+  </div> 
 
 </div>
 
