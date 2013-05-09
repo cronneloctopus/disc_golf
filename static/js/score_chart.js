@@ -5,7 +5,7 @@ $(function () {
                 type: 'spline'
             },
             title: {
-                text: 'Your Score Data'
+                text: ''
             },
             xAxis: [{
                 "type": "datetime",
@@ -19,12 +19,12 @@ $(function () {
                 title: {
                     text: 'Score'
                 },
-                min: min_score
+                min: (min_score - 1)
             },
             tooltip: {
                 formatter: function() {
                         return '<b>'+ this.series.name +'</b><br/>'+
-                        Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y;
+                        Highcharts.dateFormat('%e %b', this.x) +': '+ '<strong>'+this.y+'</strong>';
                 }
             },
             
