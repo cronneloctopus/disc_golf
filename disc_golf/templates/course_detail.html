@@ -31,7 +31,18 @@ var nine_score_arr = new Array();
   {% endfor %}
 {% endif %}
 
-console.log(nine_score_arr[0]);
+var eighteen_score_arr = new Array();
+
+{% if eighteen_scores %}
+  {% for d, v in eighteen_scores %}
+    arr = new Array();
+    arr.push(Date.UTC({{ d[0] }}, {{ d[1]-1 }}, {{ d[2] }}));
+    arr.push({{ v }});
+    console.log(arr)
+    eighteen_score_arr.push(arr);
+  {% endfor %}
+{% endif %}
+
 
 // min, max values
 // set minimum to 0 to be safe 
