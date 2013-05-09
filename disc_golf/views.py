@@ -154,17 +154,16 @@ def course_detail(slug):
     ).order_by('-created')
     # print all_scores
 
+    nine_scores = []
+    eighteen_scores = []
+
     if all_scores:
         # get data of last round
         data['last_round'] = all_scores[0]
-        nine_score_list = []
-        eighteen_score_list = []
-        nine_scores = []
-        eighteen_scores = []
+
         for card in all_scores:
             if card.baskets == 9 and card.score:
                 nine_count += 1
-                nine_score_list.append(card.score)
                 # make time tuple
                 tt = card.created.timetuple()
                 dt = (tt[0], tt[1], tt[2])
@@ -173,7 +172,6 @@ def course_detail(slug):
                 data['nine_sum'] += card.score
             elif card.baskets == 18 and card.score:
                 eighteen_count += 1
-                eighteen_score_list.append(card.score)
                 # update dictionary
                 eighteen_scores[card.created] = card.score
                 data['eighteen_sum'] += card.score
@@ -193,13 +191,6 @@ def course_detail(slug):
             data['eighteen_min'] = map(min, zip(*eighteen_scores))
 
         # get start date, end date
-
-        
-
-        # sort scores
-        ###data['nine_max'] = max(nine_score_dict, key=lambda x: nine_score_dict.get(x))
-        ###data['nine_min'] = min(nine_score_dict, key=lambda x: nine_score_dict.get(x))
-        ###print data['nine_max']
 
     return render_template(
         'course_detail.html',

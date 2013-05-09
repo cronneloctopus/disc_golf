@@ -1,4 +1,5 @@
 $(function () {
+    if (nine_score_arr.length > 0 || eighteen_score_arr.length > 0 ) {
         $('#score_chart').highcharts({
             chart: {
                 type: 'spline'
@@ -42,5 +43,5 @@ $(function () {
               },
             ]
         });
-    });
-    
+    }; 
+});   
