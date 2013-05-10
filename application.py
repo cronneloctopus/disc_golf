@@ -21,7 +21,7 @@ db = MongoEngine(app)
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
     port = int(os.environ.get('PORT', 5000))
-    """
+    
     app.debug = True
 
     # Specify the debug panels you want
@@ -39,5 +39,5 @@ if __name__ == '__main__':
         'flask_debugtoolbar_mongo.panel.MongoDebugPanel',
     ]
     toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
-    """
+    
     app.run(host='0.0.0.0', port=port)
