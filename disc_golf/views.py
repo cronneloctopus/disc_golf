@@ -172,8 +172,11 @@ def course_detail(slug):
                 data['nine_sum'] += card.score
             elif card.baskets == 18 and card.score:
                 eighteen_count += 1
+                # make time tuple
+                tt = card.created.timetuple()
+                dt = (tt[0], tt[1], tt[2])
                 # update dictionary
-                eighteen_scores[card.created] = card.score
+                eighteen_scores.append((dt, card.score))
                 data['eighteen_sum'] += card.score
 
         # get avgs
@@ -200,5 +203,5 @@ def course_detail(slug):
         data=data,
         all_scores=all_scores,
         nine_scores=nine_scores,
-        eighteen_scores=eighteen_scores
+        eighteen_scores=eighteen_scores,
     )

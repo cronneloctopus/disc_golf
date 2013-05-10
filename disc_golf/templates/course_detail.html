@@ -10,7 +10,8 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/score_chart.js') }}"></script>
 
 <script type="text/javascript">
-//** map variables  **//
+
+//** MAP VARIABLES  **//
 var courseLat = undefined;
 var courseLon = undefined;
 {% if course.location[0] and course.location[1] %} 
@@ -18,34 +19,35 @@ var courseLon = undefined;
   courseLon = {{ course.location[1] }};
 {% endif %}
 
-//** chart variables **//
+//** CHART VARIABLES **//
+// nine baskets scores
 var nine_score_arr = new Array();
-
 {% if nine_scores %}
   {% for d, v in nine_scores %}
     arr = new Array();
+    // make UTC date from (year, month-1, day)
     arr.push(Date.UTC({{ d[0] }}, {{ d[1]-1 }}, {{ d[2] }}));
     arr.push({{ v }});
-    console.log(arr)
+    //console.log(arr)
     nine_score_arr.push(arr);
   {% endfor %}
 {% endif %}
 
-var eighteen_score_arr = new Array();
 
+// eighteen basket scores
+var eighteen_score_arr = new Array();
 {% if eighteen_scores %}
   {% for d, v in eighteen_scores %}
     arr = new Array();
+    // make UTC date from (year, month-1, day)
     arr.push(Date.UTC({{ d[0] }}, {{ d[1]-1 }}, {{ d[2] }}));
     arr.push({{ v }});
-    console.log(arr)
+    //console.log(arr)
     eighteen_score_arr.push(arr);
   {% endfor %}
 {% endif %}
 
-
-// min, max values
-// set minimum to 0 to be safe 
+// minimum score value - initialize to 0 to be safe
 var min_score = 0;
 {% if data.nine_min and data.eighteen_min %}
   min_score = Math.min({{ data.nine_min[1] }}, {{ data.eighteen_min[1] }});
@@ -53,7 +55,8 @@ var min_score = 0;
   min_score = {{ data.nine_min[1] }};
 {% elif data.eighteen_min and not data.nine_min %}
   min_score =  {{ data.eighteen_min[1] }};
-{% endif %} 
+{% endif %}
+
 
 </script>
 
@@ -144,7 +147,7 @@ var min_score = 0;
       </td>
       <td>
          {% if data.eighteen_max %}
-            {{ data.eighteenmax[1] }} [
+            {{ data.eighteen_max[1] }} [
                 {% if data.eighteen_max[1] > 54 %}+{% endif %}{{ data.eighteen_max[1]|subtract(54) }} ]
         {% else %}No data
         {% endif %}
@@ -163,10 +166,9 @@ var min_score = 0;
       </td>
       <td>
         {% if data.eighteen_avg %}
-            {# set nine basket average #}
             {{ data.eighteen_avg }}
             [
-            {% if data.eighteen_avg > 27 %}+{% endif %}{{ data.eighteen_avg|subtract(27) }} 
+            {% if data.eighteen_avg > 54 %}+{% endif %}{{ data.eighteen_avg|subtract(54) }} 
              ]
         {% else %}No data
         {% endif %}

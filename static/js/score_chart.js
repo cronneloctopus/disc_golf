@@ -19,7 +19,8 @@ $(function () {
                 title: {
                     text: 'Score'
                 },
-                min: (min_score - 1)
+                // set minimum y-value to lowest possible score
+                min: 9
             },
             tooltip: {
                 formatter: function() {
