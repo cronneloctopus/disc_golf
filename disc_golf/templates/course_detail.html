@@ -6,8 +6,17 @@
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/course_map.js') }}"></script>
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/score_chart.js') }}"></script>
+
+{% if session.map_provider == 'google' %}
+  <!-- google maps -->
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbVquKG9BcYwP43AGo4XoZS1Rl9NIgZHo&sensor=false"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/google_course_map.js') }}"></script>
+{% else %}
+   <script type="text/javascript" src="{{ url_for('static', filename='js/course_map.js') }}"></script>
+{% endif %}
 
 <script type="text/javascript">
 
@@ -78,6 +87,7 @@ var min_score = 0;
 </div><!-- end wrapper -->
 
 <div class="sixteen columns">
+  <p>Map Provider: <a href=".?map=google">Google</a> | <a href=".?map=osm">OpenLayers</a></p>
   <div id="map-canvas" class="sixteen columns"></div>
   <div id="map" class="sixteen columns"></div>
 </div>

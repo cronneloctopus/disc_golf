@@ -114,6 +114,12 @@ def logout():
     return redirect(oid.get_next_url())
 ######################## END OPENID ######################
 
+@app.route('/test/')
+#@login_required
+def test():
+    return render_template(
+        'test.html',
+    )
 
 @index_page.route('/')
 #@login_required
@@ -128,6 +134,9 @@ def index():
 
 @app.route('/course/<slug>/', methods=['GET', 'POST'])
 def course_detail(slug):
+    # check for map variable
+    if request.method == "GET":
+        session['map_provider'] = request.args.get("map")
     course = Course.objects.get(slug=slug)
     # score form
     form = ScoreForm(request.form)

@@ -23,6 +23,7 @@ if __name__ == '__main__':
 
     app.debug = True
 
+    """
     # add flask debug toolbar
     import flask_debugtoolbar
 
@@ -40,5 +41,6 @@ if __name__ == '__main__':
         'flask_debugtoolbar_mongo.panel.MongoDebugPanel',
     ]
     toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
+    """
 
     app.run(host='0.0.0.0', port=port)
