@@ -135,7 +135,7 @@ def index():
 @app.route('/course/<slug>/', methods=['GET', 'POST'])
 def course_detail(slug):
     # check for map variable
-    if request.method == "GET":
+    if request.method == "GET" and request.args.get("map"):
         session['map_provider'] = request.args.get("map")
     course = Course.objects.get(slug=slug)
     # score form
