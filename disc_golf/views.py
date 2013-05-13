@@ -1,14 +1,16 @@
 import os
+import requests
 from functools import wraps
 from flask import request, render_template, redirect, \
     url_for, session, g, flash, Blueprint
-from config import app
 from disc_golf.models import Course, ScoreCard
 from forms import LoginForm, ScoreForm
 
 from flask.ext.openid import OpenID
 from config import OPENID_PROVIDERS
 from models import User
+
+from config import app
 
 
 index_page = Blueprint(
@@ -26,6 +28,21 @@ def divide_filter(v, arg):
 def subtract_filter(v, arg):
     return v - arg
 
+
+# send mail function
+def send_mail(to_address, from_address, subject, plaintext, html):
+    r = requests.\
+        post("https://api.mailgun.net/v2/%s/messages" % app.config['MAILGUN_DOMAIN'],
+             auth=("api", app.config['MAILGUN_KEY']),
+             data={
+                 "from": from_address,
+                 "to": to_address,
+                 "subject": subject,
+                 "text": plaintext,
+                 "html": html
+             }
+             )
+    return r
 
 ############################ OPENID ######################
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -114,6 +131,7 @@ def logout():
     return redirect(oid.get_next_url())
 ######################## END OPENID ######################
 
+
 @app.route('/test/')
 #@login_required
 def test():
@@ -121,10 +139,19 @@ def test():
         'test.html',
     )
 
+
 @index_page.route('/')
 #@login_required
 def index():
     courses = Course.objects.all()
+    # send mail test
+    send_mail(
+        to_address='darwin.galap@gmail.com',
+        from_address='cronneloctopus@gmail.com',
+        subject='testing',
+        plaintext='',
+        html='')
+
     return render_template(
         'index.html',
         title='Disc Golf - Home',
@@ -152,6 +179,8 @@ def course_detail(slug):
         if course_score.created:
             course_score.created = form.created.data
         course_score.save()
+        # TODO: send email to user
+        ##email = 
         flash('Thanks for submitting a score!')
 
     # get course data

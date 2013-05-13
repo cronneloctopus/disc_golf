@@ -6,6 +6,10 @@ from config import app
 
 app.config['SECRET_KEY'] = 'teddymonkey'
 
+# email server
+app.config['MAILGUN_KEY'] = 'key-6w92k3knfasbqkgm8kszgzrlnvs016c9'
+app.config['MAILGUN_DOMAIN'] = 'app14403725.mailgun.org'
+
 # get config settings
 if __name__ == '__main__':
     app.config.from_object('config')
@@ -13,7 +17,7 @@ else:
     app.config.from_object('heroku_config')
 
 
-# wrapp app in mongengine
+# instantiate mongengine
 db = MongoEngine(app)
 
 
