@@ -19,6 +19,11 @@ connect(
 )
 
 
+# email server
+app.config['MAILGUN_KEY'] = 'key-6w92k3knfasbqkgm8kszgzrlnvs016c9'
+app.config['MAILGUN_DOMAIN'] = 'app14403725.mailgun.org'
+
+
 CSRF_ENABLED = True
 SECRET_KEY = 'teddymonkey'
 
