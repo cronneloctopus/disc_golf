@@ -29,6 +29,8 @@ def subtract_filter(v, arg):
     return v - arg
 
 
+############################ FUNTIONS ######################
+
 # send mail function
 def send_mail(to_address, from_address, subject, plaintext, html):
     r = requests.post(
@@ -44,7 +46,9 @@ def send_mail(to_address, from_address, subject, plaintext, html):
     )
     return r
 
+
 ############################ OPENID ######################
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 oid = OpenID(app, os.path.join(basedir, 'tmp'))
 
@@ -103,6 +107,7 @@ def after_login(resp):
     except User.DoesNotExist:
         # add user to db!!
         # split on '@' and return first string
+        # TODO: handle none unique usernames
         username = resp.email.split('@', 1)[0]
         user = User(
             username=username,
@@ -138,6 +143,7 @@ def logout():
     session.pop('remember_me', None)
     flash(u'You were signed out')
     return redirect(oid.get_next_url())
+    
 ######################## END OPENID ######################
 
 
@@ -171,7 +177,6 @@ def course_detail(slug):
     form = ScoreForm(request.form)
     # validate and submit form data
     if request.method == 'POST' and form.validate():
-        print g.user
         course_score = ScoreCard(
             user=g.user,
             score=form.score.data,
@@ -181,7 +186,11 @@ def course_detail(slug):
         if course_score.created:
             course_score.created = form.created.data
         course_score.save()
+
+        flash('Thanks for submitting a score!')
+
         # TODO: send email to user
+        # TODO: use celery to offload to queue
         send_mail(
             to_address=g.user.email,
             from_address='discgolf-app@gmail.com',
@@ -189,7 +198,6 @@ def course_detail(slug):
             plaintext='You just recorded a new score for ' + course.name,
             html='You just recorded a new score for <b>' + course.name + '</b>'
         )
-        flash('Thanks for submitting a score!')
 
     # get course data
     data = {'nine_sum': 0, 'eighteen_sum': 0}
