@@ -31,17 +31,17 @@ def subtract_filter(v, arg):
 
 # send mail function
 def send_mail(to_address, from_address, subject, plaintext, html):
-    r = requests.\
-        post("https://api.mailgun.net/v2/%s/messages" % app.config['MAILGUN_DOMAIN'],
-             auth=("api", app.config['MAILGUN_KEY']),
-             data={
-                 "from": from_address,
-                 "to": to_address,
-                 "subject": subject,
-                 "text": plaintext,
-                 "html": html
-             }
-             )
+    r = requests.post(
+        "https://api.mailgun.net/v2/%s/messages" % app.config['MAILGUN_DOMAIN'],
+        auth=("api", app.config['MAILGUN_KEY']),
+        data={
+            "from": from_address,
+            "to": to_address,
+            "subject": subject,
+            "text": plaintext,
+            "html": html
+        }
+    )
     return r
 
 ############################ OPENID ######################
@@ -102,12 +102,21 @@ def after_login(resp):
         user = User.objects.get(email=resp.email)
     except User.DoesNotExist:
         # add user to db!!
+        # split on '@' and return first string
+        username = resp.email.split('@', 1)[0]
         user = User(
-            username=resp.email,
+            username=username,
             email=resp.email
         )
         user.save()
-        ###return redirect(url_for('login'))
+        # send email confirmation to user
+        send_mail(
+            to_address=resp.email,
+            from_address='discgolf-app@gmail.com',
+            subject='Welcome to Disc Golf!',
+            plaintext='Welcome to Disc Golf!',
+            html='<b>Welcome to Disc Golf!</b>'
+        )
 
     session['user'] = user
     session['email'] = resp.email
@@ -144,13 +153,6 @@ def test():
 #@login_required
 def index():
     courses = Course.objects.all()
-    # send mail test
-    send_mail(
-        to_address='darwin.galap@gmail.com',
-        from_address='cronneloctopus@gmail.com',
-        subject='testing',
-        plaintext='',
-        html='')
 
     return render_template(
         'index.html',
@@ -180,7 +182,13 @@ def course_detail(slug):
             course_score.created = form.created.data
         course_score.save()
         # TODO: send email to user
-        ##email = 
+        send_mail(
+            to_address=g.user.email,
+            from_address='discgolf-app@gmail.com',
+            subject='New Dsic Golf Scorecard Score.',
+            plaintext='You just recorded a new score for ' + course.name,
+            html='You just recorded a new score for <b>' + course.name + '</b>'
+        )
         flash('Thanks for submitting a score!')
 
     # get course data
