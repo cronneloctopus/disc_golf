@@ -47,6 +47,56 @@ def send_mail(to_address, from_address, subject, plaintext, html):
     return r
 
 
+def get_score_data(all_scores):
+    data = {'nine_sum': 0, 'eighteen_sum': 0}
+    nine_count = 0
+    eighteen_count = 0
+    nine_scores = []
+    eighteen_scores = []
+
+    if all_scores:
+        # get data of last round
+        data['last_round'] = all_scores[0]
+
+        for card in all_scores:
+            if card.baskets == 9 and card.score:
+                nine_count += 1
+                # make time tuple
+                tt = card.created.timetuple()
+                dt = (tt[0], tt[1], tt[2])
+                # update dictionary
+                nine_scores.append((dt, card.score))
+                data['nine_sum'] += card.score
+            elif card.baskets == 18 and card.score:
+                eighteen_count += 1
+                # make time tuple
+                tt = card.created.timetuple()
+                dt = (tt[0], tt[1], tt[2])
+                # update dictionary
+                eighteen_scores.append((dt, card.score))
+                data['eighteen_sum'] += card.score
+
+        data['nine_scores'] = nine_scores
+        data['eighteen_scores'] = eighteen_scores
+
+        # get avgs
+        if data['nine_sum']:
+            data['nine_avg'] = data['nine_sum'] / len(nine_scores)
+        if data['eighteen_sum']:
+            data['eighteen_avg'] = data['eighteen_sum'] / len(eighteen_scores)
+
+        # get min, max
+        if len(nine_scores) > 0:
+            data['nine_max'] = map(max, zip(*nine_scores))
+            data['nine_min'] = map(min, zip(*nine_scores))
+        if len(eighteen_scores) > 0:
+            data['eighteen_max'] = map(max, zip(*eighteen_scores))
+            data['eighteen_min'] = map(min, zip(*eighteen_scores))
+
+    return data
+
+
+
 ############################ OPENID ######################
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -107,13 +157,24 @@ def after_login(resp):
     except User.DoesNotExist:
         # add user to db!!
         # split on '@' and return first string
-        # TODO: handle none unique usernames
+        # TODO: handle none unique usernames - NotUniqueError
         username = resp.email.split('@', 1)[0]
-        user = User(
-            username=username,
-            email=resp.email
-        )
+        try:
+            user = User(
+                username=username,
+                email=resp.email
+            )
+        except User.NotUniqueError:
+            # this is unlikely as username is always
+            # derived the same way, so if username exists then email should,
+            # this could only happen if same user but different email provider
+            # TODO: if username taken but email not duplicate
+            # append 1 to username, increment until valid
+            flash(u'Sorry, username already taken. Please try again.')
+            return redirect(url_for('login'))
+
         user.save()
+
         # send email confirmation to user
         send_mail(
             to_address=resp.email,
@@ -143,7 +204,7 @@ def logout():
     session.pop('remember_me', None)
     flash(u'You were signed out')
     return redirect(oid.get_next_url())
-    
+
 ######################## END OPENID ######################
 
 
@@ -200,54 +261,12 @@ def course_detail(slug):
         )
 
     # get course data
-    data = {'nine_sum': 0, 'eighteen_sum': 0}
-    nine_count = 0
-    eighteen_count = 0
     all_scores = ScoreCard.objects.all().filter(course=course).filter(
         user=g.user
     ).order_by('-created')
-    # print all_scores
 
-    nine_scores = []
-    eighteen_scores = []
-
-    if all_scores:
-        # get data of last round
-        data['last_round'] = all_scores[0]
-
-        for card in all_scores:
-            if card.baskets == 9 and card.score:
-                nine_count += 1
-                # make time tuple
-                tt = card.created.timetuple()
-                dt = (tt[0], tt[1], tt[2])
-                # update dictionary
-                nine_scores.append((dt, card.score))
-                data['nine_sum'] += card.score
-            elif card.baskets == 18 and card.score:
-                eighteen_count += 1
-                # make time tuple
-                tt = card.created.timetuple()
-                dt = (tt[0], tt[1], tt[2])
-                # update dictionary
-                eighteen_scores.append((dt, card.score))
-                data['eighteen_sum'] += card.score
-
-        # get avgs
-        if data['nine_sum']:
-            data['nine_avg'] = data['nine_sum'] / len(nine_scores)
-        if data['eighteen_sum']:
-            data['eighteen_avg'] = data['eighteen_sum'] / len(eighteen_scores)
-
-        # get min, max
-        if len(nine_scores) > 0:
-            data['nine_max'] = map(max, zip(*nine_scores))
-            data['nine_min'] = map(min, zip(*nine_scores))
-        if len(eighteen_scores) > 0:
-            data['eighteen_max'] = map(max, zip(*eighteen_scores))
-            data['eighteen_min'] = map(min, zip(*eighteen_scores))
-
-        # get start date, end date
+    # get all the score data we need!
+    data = get_score_data(all_scores)
 
     return render_template(
         'course_detail.html',
@@ -256,6 +275,4 @@ def course_detail(slug):
         form=form,
         data=data,
         all_scores=all_scores,
-        nine_scores=nine_scores,
-        eighteen_scores=eighteen_scores,
     )

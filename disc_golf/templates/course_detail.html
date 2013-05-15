@@ -31,8 +31,8 @@ var courseLon = undefined;
 //** CHART VARIABLES **//
 // nine baskets scores
 var nine_score_arr = new Array();
-{% if nine_scores %}
-  {% for d, v in nine_scores %}
+{% if data['nine_scores'] %}
+  {% for d, v in data['nine_scores'] %}
     arr = new Array();
     // make UTC date from (year, month-1, day)
     arr.push(Date.UTC({{ d[0] }}, {{ d[1]-1 }}, {{ d[2] }}));
@@ -45,8 +45,8 @@ var nine_score_arr = new Array();
 
 // eighteen basket scores
 var eighteen_score_arr = new Array();
-{% if eighteen_scores %}
-  {% for d, v in eighteen_scores %}
+{% if data['eighteen_scores'] %}
+  {% for d, v in  data['eighteen_scores'] %}
     arr = new Array();
     // make UTC date from (year, month-1, day)
     arr.push(Date.UTC({{ d[0] }}, {{ d[1]-1 }}, {{ d[2] }}));
